@@ -1,0 +1,19 @@
+{
+  "name": "leak-detector",
+  "main": "./lib/main",
+  "version": "0.0.0",
+  "description": "Leak Detection",
+  "keywords": [
+  ],
+  "activationCommands": {
+    "atom-workspace": "leak-detector:start"
+  },
+  "repository": "https://github.com/aki77/atom-leak-detector",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {
+    "memwatch-next": "^0.2.6"
+  }
+}
