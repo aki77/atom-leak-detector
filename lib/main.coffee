@@ -5,50 +5,50 @@ module.exports =
   config:
     maxDisposables:
       type: 'integer'
-      default: 100
+      default: 200
     maxMarkers:
       type: 'integer'
-      default: 100
+      default: 200
 
   activate: (state) ->
-    @subscriptions = new CompositeDisposable
-    @subscriptions.add atom.workspace.observeTextEditors (editor) =>
-      @handleEvents(editor)
-
     @commandSubscription = atom.commands.add 'atom-workspace',
       'leak-detector:start': => @start()
 
   deactivate: ->
-    @subscriptions?.dispose()
-    @subscriptions = null
+    @leakSubscriptions.dispose()
+    @leakSubscriptions = null
     @commandSubscription?.dispose()
     @commandSubscription = null
 
   handleEvents: (editor) ->
     {displayBuffer} = editor
 
-    markerCreatedSubscription = displayBuffer.onDidCreateMarker ->
+    markerCreatedCallback =  ->
       makersLength = Object.keys(displayBuffer.markers).length
       if makersLength > atom.config.get('leak-detector.maxMarkers')
         obj = {}
-        Error.captureStackTrace(obj, CompositeDisposable::add)
+        Error.captureStackTrace(obj, markerCreatedCallback)
         message = "possible DisplayBuffer memory leak detected. #{makersLength} markers added."
         atom.notifications.addError(message, {detail: obj.stack, dismissable: true})
       return
+    markerCreatedSubscription = displayBuffer.onDidCreateMarker(markerCreatedCallback)
 
     editorDestroyedSubscription = editor.onDidDestroy =>
       markerCreatedSubscription.dispose()
       editorDestroyedSubscription.dispose()
 
-      @subscriptions.remove(markerCreatedSubscription)
-      @subscriptions.remove(editorDestroyedSubscription)
+      @leakSubscriptions.remove(markerCreatedSubscription)
+      @leakSubscriptions.remove(editorDestroyedSubscription)
 
-    @subscriptions.add(markerCreatedSubscription)
-    @subscriptions.add(editorDestroyedSubscription)
+    @leakSubscriptions.add(markerCreatedSubscription)
+    @leakSubscriptions.add(editorDestroyedSubscription)
 
   start: ->
     @leakSubscriptions = new CompositeDisposable
     @leakSubscriptions.add(@wrapCompositeDisposable())
+    @leakSubscriptions.add(atom.workspace.observeTextEditors (editor) =>
+      @handleEvents(editor)
+    )
 
     onLeakCallback = (info) => @onLeak(info)
     memwatch.on('leak', onLeakCallback)

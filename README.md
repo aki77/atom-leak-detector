@@ -6,8 +6,8 @@ Leak Detection.
 
 ## Settings
 
-* `maxDisposables` (default:100)
-* `maxMarkers` (default:100)
+* `maxDisposables` (default:200)
+* `maxMarkers` (default:200)
 
 ## Commands
 
