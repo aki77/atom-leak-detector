@@ -22,7 +22,7 @@ module.exports =
       'leak-detector:start': => @start()
 
   deactivate: ->
-    @leakSubscriptions.dispose()
+    @leakSubscriptions?.dispose()
     @leakSubscriptions = null
     @commandSubscription?.dispose()
     @commandSubscription = null

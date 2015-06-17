@@ -1,3 +1,6 @@
+## 0.1.3
+* Fix deactivate error
+
 ## 0.1.2
 * Add autoRun settings
 
