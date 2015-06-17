@@ -4,11 +4,18 @@ memwatch = require 'memwatch-next'
 module.exports =
   config:
     maxDisposables:
+      order: 1
       type: 'integer'
       default: 200
     maxMarkers:
+      order: 2
       type: 'integer'
       default: 200
+    autoRun:
+      order: 3
+      type: 'boolean'
+      default: false
+      description: 'only in development mode (Requirement: auto-run package)'
 
   activate: (state) ->
     @commandSubscription = atom.commands.add 'atom-workspace',
@@ -84,3 +91,15 @@ module.exports =
 
     new Disposable ->
       CompositeDisposable::add = add
+
+  activateConfig: ->
+    pack = atom.packages.getActivePackage('auto-run')
+    return unless pack
+
+    autoRun = pack.mainModule.provideAutoRun()
+    autoRun.registerCommand(
+      keyPath: 'leak-detector.autoRun'
+      command: 'leak-detector:start'
+      options:
+        devMode: true
+    )
