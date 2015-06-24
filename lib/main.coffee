@@ -31,7 +31,7 @@ module.exports =
     {displayBuffer} = editor
 
     markerCreatedCallback =  ->
-      makersLength = Object.keys(displayBuffer.markers).length
+      makersLength = displayBuffer.getMarkerCount()
       if makersLength > atom.config.get('leak-detector.maxMarkers')
         obj = {}
         Error.captureStackTrace(obj, markerCreatedCallback)
