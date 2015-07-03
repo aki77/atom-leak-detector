@@ -1,3 +1,6 @@
+## 0.1.5
+* Fix disposables error
+
 ## 0.1.4
 * Clean up
 

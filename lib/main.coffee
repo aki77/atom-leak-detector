@@ -82,7 +82,7 @@ module.exports =
     add = CompositeDisposable::add
     CompositeDisposable::add = ->
       add.apply(this, arguments)
-      if @disposables.size > atom.config.get('leak-detector.maxDisposables')
+      if @disposables?.size > atom.config.get('leak-detector.maxDisposables')
         obj = {}
         Error.captureStackTrace(obj, CompositeDisposable::add)
         message = "possible CompositeDisposable memory leak detected. #{@disposables.size} disposables added."
