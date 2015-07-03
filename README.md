@@ -13,6 +13,7 @@ Leak Detection.
 
 * `maxDisposables` (default:200)
 * `maxMarkers` (default:200)
+* `maxPanels` (default: 20)
 * `autoRun` (default:false)
 
 [![Gyazo](http://i.gyazo.com/df760a429c7e6f0974a1f2cf9771476c.png)](http://gyazo.com/df760a429c7e6f0974a1f2cf9771476c)

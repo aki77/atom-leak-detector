@@ -11,8 +11,12 @@ module.exports =
       order: 2
       type: 'integer'
       default: 200
-    autoRun:
+    MaxPanels:
       order: 3
+      type: 'integer'
+      default: 20
+    autoRun:
+      order: 10
       type: 'boolean'
       default: false
       description: 'only in development mode (Requirement: auto-run package)'
@@ -53,6 +57,7 @@ module.exports =
   start: ->
     @leakSubscriptions = new CompositeDisposable
     @leakSubscriptions.add(@wrapCompositeDisposable())
+    @leakSubscriptions.add(@watchPanels())
     @leakSubscriptions.add(atom.workspace.observeTextEditors (editor) =>
       @handleEvents(editor)
     )
@@ -91,6 +96,22 @@ module.exports =
 
     new Disposable ->
       CompositeDisposable::add = add
+
+  watchPanels: ->
+    addedPanelCallback = ->
+      panelCount = @getPanels().length
+      if panelCount > atom.config.get('leak-detector.maxPanels')
+        obj = {}
+        Error.captureStackTrace(obj, addedPanelCallback)
+        message = "possible PanelContainer panels leak detected. #{panelCount} panels added."
+        atom.notifications.addError(message, {detail: obj.stack, dismissable: true})
+      return
+
+    subscriptions = new CompositeDisposable
+    for location, container of atom.workspace.panelContainers
+      subscriptions.add(container.onDidAddPanel(addedPanelCallback.bind(container)))
+
+    subscriptions
 
   activateConfig: ->
     pack = atom.packages.getActivePackage('auto-run')
