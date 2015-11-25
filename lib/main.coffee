@@ -1,4 +1,3 @@
-memwatch = require 'memwatch-next'
 {CompositeDisposable, Disposable} = require 'atom'
 
 module.exports =
@@ -61,12 +60,6 @@ module.exports =
     @leakSubscriptions.add(atom.workspace.observeTextEditors (editor) =>
       @handleEvents(editor)
     )
-
-    onLeakCallback = (info) => @onLeak(info)
-    memwatch.on('leak', onLeakCallback)
-    @leakSubscriptions.add(new Disposable( ->
-      memwatch.removeListener('leak', onLeakCallback)
-    ))
 
     @commandSubscription?.dispose()
     @commandSubscription = atom.commands.add 'atom-workspace',

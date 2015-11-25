@@ -10,9 +10,6 @@
   "repository": "https://github.com/aki77/atom-leak-detector",
   "license": "MIT",
   "engines": {
-    "atom": ">=0.174.0 <2.0.0"
-  },
-  "dependencies": {
-    "memwatch-next": "^0.2.6"
+    "atom": ">=1.0.0 <2.0.0"
   }
 }

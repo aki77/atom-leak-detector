@@ -1,3 +1,6 @@
+## 0.2.1
+* Remove memwatch-next
+
 ## 0.2.0
 * Fix disposables error
 * Add maxPanels settings
